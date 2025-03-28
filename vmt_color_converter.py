@@ -1,6 +1,18 @@
 import tkinter as tk
 from tkinter import messagebox
 import webbrowser
+import sys
+import os
+
+def resource_path(relative_path):
+    """ Get absolute path to resource (for PyInstaller & dev) """
+    try:
+        base_path = sys._MEIPASS  # PyInstaller temp folder
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 boost_factor = 2.1
 
@@ -81,7 +93,7 @@ def open_about():
     about.resizable(False, False)
     about.configure(bg=dark_bg)
     tk.Label(about, text="Created by peeps", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
-    tk.Label(about, text="Version: 0.0.2", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
+    tk.Label(about, text="Version: 0.0.3", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
     tk.Label(about, text="Contact:", fg=light_fg, bg=dark_bg).pack()
     btn_frame = tk.Frame(about, bg=dark_bg)
     btn_frame.pack(pady=5)
@@ -102,7 +114,7 @@ font_heading = ("Segoe UI", 12, "bold")
 
 root = tk.Tk()
 root.title("VMT $color Converter")
-root.iconbitmap("vmt_color_converter.ico")
+root.iconbitmap(resource_path("vmt_color_converter.ico"))
 root.configure(bg=dark_bg)
 root.resizable(False, False)
 

@@ -5,7 +5,7 @@ a = Analysis(
     ['vmt_color_converter.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('vmt_color_converter.ico', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
