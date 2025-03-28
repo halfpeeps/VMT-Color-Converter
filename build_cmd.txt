@@ -1,0 +1,1 @@
+pyinstaller --onefile --windowed --clean --icon=vmt_color_converter.ico vmt_color_converter.py
