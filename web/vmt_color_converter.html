@@ -35,6 +35,10 @@
       padding: var(--spacing-medium);
     }
 
+    a:visited {
+      color: rgb(221, 221, 221); /* or any color you want */
+    }
+
     .container {
       display: flex;
       flex-wrap: wrap;
@@ -104,9 +108,10 @@
 </head>
 <body>
   <h1>VMT $color Converter</h1>
+  <h3>$color to $color2</h3>
   <div class="container">
     <div class="inputs">
-      <label>RGB:</label><br>
+      <label>RGB ($color):</label><br>
       R <input id="r" type="number" min="0" max="255" value="0">
       G <input id="g" type="number" min="0" max="255" value="0">
       B <input id="b" type="number" min="0" max="255" value="0">
@@ -119,12 +124,22 @@
         <div id="slider-container" style="display: none;">
           <label for="boost-slider">Boost Factor: <span id="boost-value">2.1</span></label>
           <input id="boost-slider" type="range" min="1.0" max="3.0" step="0.05" value="2.1">
+          <p>How much the intensity is boosted to match the color between shaders (default: 2.1)</p>
         </div>
       </div>
     </div>
     <div class="preview">
       <div class="preview-box" id="color-preview">PREVIEW</div>
     </div>
+  </div>
+  <br><br>
+  <div>Created by peeps  |  Versoin 0.0.3-web</div>
+  <div>
+    <a href="https://github.com/halfpeeps/VMT-Color-Converter">GitHub</a>
+    <a href="https://steamcommunity.com/id/halfpeeps/">Steam</a>
+    <a href="https://perpheads.com/members/peeps.10255/">Forums</a>
+    <br>
+    <a href="https://halfpeeps.github.io/Paralake-V6-Development-Archive/downloads">Desktop Version</a>
   </div>
   <script>
     const rInput = document.getElementById('r');
