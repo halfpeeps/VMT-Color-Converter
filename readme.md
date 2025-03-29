@@ -2,6 +2,8 @@
 
 A simple Python GUI tool to convert Source Engine `$color` (used on brushes) to `$color2` (used on models), using perceptual brightness correction to visually match the in-game appearance between shaders.
 
+Web version: https://halfpeeps.github.io/VMT-Color-Converter/
+
 ![Preview](https://files.perpheads.com/OgOZUYy36w6L14na.jpg)
 
 ## Interface Overview
