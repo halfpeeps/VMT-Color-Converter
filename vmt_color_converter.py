@@ -93,13 +93,14 @@ def open_about():
     about.resizable(False, False)
     about.configure(bg=dark_bg)
     tk.Label(about, text="Created by peeps", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
-    tk.Label(about, text="Version: 0.0.3", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
+    tk.Label(about, text="Version: 0.0.4", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
     tk.Label(about, text="Contact:", fg=light_fg, bg=dark_bg).pack()
     btn_frame = tk.Frame(about, bg=dark_bg)
     btn_frame.pack(pady=5)
     tk.Button(btn_frame, text="Steam", width=10, command=lambda: webbrowser.open("https://steamcommunity.com/id/halfpeeps/")).pack(side="left", padx=5)
     tk.Button(btn_frame, text="Forums", width=10, command=lambda: webbrowser.open("https://perpheads.com/members/peeps.10255/")).pack(side="left", padx=5)
     tk.Button(btn_frame, text="GitHub", width=10, command=lambda: webbrowser.open("https://github.com/halfpeeps/VMT-Color-Converter")).pack(side="left", padx=5)
+    tk.Button(btn_frame, text="Web Version", width=10, command=lambda: webbrowser.open("https://halfpeeps.github.io/VMT-Color-Converter/")).pack(side="left", padx=5)
 
 
 #gui
