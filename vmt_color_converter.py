@@ -114,7 +114,7 @@ def open_about():
     about.resizable(False, False)
     about.configure(bg=dark_bg)
     tk.Label(about, text="Created by peeps", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
-    tk.Label(about, text="Version: 0.0.5", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
+    tk.Label(about, text="Version: 0.0.6", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
     tk.Label(about, text="Contact:", fg=light_fg, bg=dark_bg).pack()
     btn_frame = tk.Frame(about, bg=dark_bg)
     btn_frame.pack(pady=5)
@@ -122,6 +122,38 @@ def open_about():
     tk.Button(btn_frame, text="Forums", width=10, command=lambda: webbrowser.open("https://perpheads.com/members/peeps.10255/")).pack(side="left", padx=5)
     tk.Button(btn_frame, text="GitHub", width=10, command=lambda: webbrowser.open("https://github.com/halfpeeps/VMT-Color-Converter")).pack(side="left", padx=5)
     tk.Button(btn_frame, text="Web Version", width=10, command=lambda: webbrowser.open("https://halfpeeps.github.io/VMT-Color-Converter/")).pack(side="left", padx=5)
+
+#tooltip
+class ToolTip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tipwindow = None
+        widget.bind("<Enter>", self.show_tip)
+        widget.bind("<Leave>", self.hide_tip)
+
+    def show_tip(self, event=None):
+        if self.tipwindow or not self.text:
+            return
+        x, y, _, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 20
+        y += self.widget.winfo_rooty() + cy + 10
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True)
+        tw.wm_geometry(f"+{x}+{y}")
+        label = tk.Label(
+            tw, text=self.text, justify="left",
+            background="#333", foreground="#fff",
+            relief="solid", borderwidth=1,
+            font=("TkDefaultFont", 9), padx=5, pady=2
+        )
+        label.pack(ipadx=1)
+
+    def hide_tip(self, event=None):
+        if self.tipwindow:
+            self.tipwindow.destroy()
+            self.tipwindow = None
+
 
 # GUI setup
 dark_bg = "#1e1e1e"
@@ -168,9 +200,11 @@ tk.Entry(frame, textvariable=result_var, width=35, state="readonly", justify="ce
 clipboard_message = tk.Label(frame, text="", fg="lime", bg=dark_bg, font=font_main)
 clipboard_message.grid(row=4, column=0, columnspan=3)
 
+#copy
 tk.Button(frame, text="Copy to Clipboard", command=copy_to_clipboard, bg=button_bg, fg=light_fg,
           relief="flat", font=font_main, activebackground=button_bg).grid(row=5, column=0, columnspan=3, pady=(5, 15))
 
+#snippit
 tk.Label(frame, text="VMT SNIPPET", fg=light_fg, bg=dark_bg, font=font_heading).grid(row=6, column=0, columnspan=3)
 
 vmt_box = tk.Text(frame, height=6, width=35, wrap="none", bg=entry_bg, fg=light_fg,
@@ -182,6 +216,7 @@ color_preview = tk.Label(frame, text="PREVIEW", font=("Segoe UI", 20, "bold"), w
                          bg=dark_bg, fg=light_fg, relief="flat", bd=2, highlightthickness=2, highlightbackground=outline)
 color_preview.grid(row=0, column=3, rowspan=8, padx=(40, 0), pady=10)
 
+#advanced check
 advanced_var = tk.BooleanVar()
 tk.Checkbutton(frame, text="Advanced", variable=advanced_var, command=toggle_advanced,
                bg=dark_bg, fg=light_fg, selectcolor=dark_bg, relief="flat", font=font_main).grid(row=8, column=0, columnspan=2, sticky="w")
@@ -191,10 +226,12 @@ boost_slider = tk.Scale(frame, from_=1.0, to=3.0, resolution=0.05, orient="horiz
 boost_slider.set(boost_factor)
 boost_slider.grid(row=9, column=0, columnspan=3)
 boost_slider.grid_remove()
+ToolTip(boost_slider, text="How much the intensity is boosted to match the color between shaders (default: 2.1)")
 
 tk.Button(frame, text="ABOUT", command=open_about, bg=button_bg, fg=light_fg,
           relief="flat", font=font_main, activebackground=button_bg).grid(row=9, column=3, sticky="e")
 
+#reverse
 reverse_label = tk.Label(frame, text="Reverse: $color2 → $color", fg=light_fg, bg=dark_bg, font=font_heading)
 reverse_label.grid(row=10, column=0, columnspan=3, pady=(20, 0))
 reverse_label.grid_remove()

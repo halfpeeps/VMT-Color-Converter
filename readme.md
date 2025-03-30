@@ -1,6 +1,6 @@
 # VMT Color Converter ($color to $color2)
 
-A simple Python GUI tool to convert Source Engine `$color` (used on brushes) to `$color2` (used on models), using perceptual brightness correction to visually match the in-game appearance between shaders.
+A simple Python GUI tool to convert Source Engine `$color` (used on brushes) to `$color2` (used on models), using perceptual brightness correction to visually match the in-game appearance between shaders.  A reverse calculation is also available under 'advanced'.
 
 Web version: https://halfpeeps.github.io/VMT-Color-Converter/
 
@@ -13,6 +13,11 @@ Web version: https://halfpeeps.github.io/VMT-Color-Converter/
 - **VMT Snippet**: Full `VertexLitGeneric` VMT block
 - **Preview Swatch**: Shows final color as it will appear on models
 - **Advanced Mode**: Allows you to edit the boost factor (affects brightness for converting between shaders)
+
+---
+
+### Current versions
+Desktop: 0.0.6  |  Web: 0.0.4-web
 
 ---
 
