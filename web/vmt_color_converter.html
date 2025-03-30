@@ -37,7 +37,7 @@
     }
 
     a:visited {
-      color: rgb(221, 221, 221); /* or any color you want */
+      color: rgb(221, 221, 221);
     }
 
     .container {
@@ -127,6 +127,13 @@
           <input id="boost-slider" type="range" min="1.0" max="3.0" step="0.05" value="2.1">
           <p>How much the intensity is boosted to match the color between shaders (default: 2.1)</p>
         </div>
+        <div id="reverse-container" style="display: none; margin-top: 20px;">
+          <label>Reverse: $color2 → $color</label><br>
+          R <input id="c2r" type="number" step="0.001" min="0" max="1" value="0">
+          G <input id="c2g" type="number" step="0.001" min="0" max="1" value="0">
+          B <input id="c2b" type="number" step="0.001" min="0" max="1" value="0">
+          <button onclick="convertToColor()">Convert to $color</button>
+        </div>
       </div>
     </div>
     <div class="preview">
@@ -134,7 +141,7 @@
     </div>
   </div>
   <br><br>
-  <div>Created by peeps  |  Versoin 0.0.3-web</div>
+  <div>Created by peeps  |  Version 0.0.4-web</div>
   <div>
     <a href="https://github.com/halfpeeps/VMT-Color-Converter">GitHub</a>
     <a href="https://steamcommunity.com/id/halfpeeps/">Steam</a>
@@ -163,6 +170,11 @@
       return [adjust(r), adjust(g), adjust(b)];
     }
 
+    function color2ToPerceptualColor(r, g, b, boost) {
+      const reverseAdjust = c => Math.round(Math.min(255, Math.pow(c, boost) * 255));
+      return [reverseAdjust(r), reverseAdjust(g), reverseAdjust(b)];
+    }
+
     function updateColor() {
       const r = Math.min(255, Math.max(0, parseInt(rInput.value) || 0));
       const g = Math.min(255, Math.max(0, parseInt(gInput.value) || 0));
@@ -173,6 +185,17 @@
       const c2rgb = color2.map(unboost).map(Math.round);
       preview.style.backgroundColor = `rgb(${c2rgb[0]}, ${c2rgb[1]}, ${c2rgb[2]})`;
       updateVMTSnippet(color2);
+    }
+
+    function convertToColor() {
+      const r = Math.min(1, Math.max(0, parseFloat(document.getElementById('c2r').value) || 0));
+      const g = Math.min(1, Math.max(0, parseFloat(document.getElementById('c2g').value) || 0));
+      const b = Math.min(1, Math.max(0, parseFloat(document.getElementById('c2b').value) || 0));
+      const [pr, pg, pb] = color2ToPerceptualColor(r, g, b, boostFactor);
+      rInput.value = pr;
+      gInput.value = pg;
+      bInput.value = pb;
+      updateColor();
     }
 
     function updateVMTSnippet(color2) {
@@ -191,7 +214,9 @@
     bInput.addEventListener('input', updateColor);
 
     document.getElementById('advanced-toggle').addEventListener('change', e => {
-      document.getElementById('slider-container').style.display = e.target.checked ? 'block' : 'none';
+      const show = e.target.checked;
+      document.getElementById('slider-container').style.display = show ? 'block' : 'none';
+      document.getElementById('reverse-container').style.display = show ? 'block' : 'none';
     });
 
     boostSlider.addEventListener('input', () => {
