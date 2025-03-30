@@ -5,17 +5,13 @@ import sys
 import os
 
 def resource_path(relative_path):
-    """ Get absolute path to resource (for PyInstaller & dev) """
     try:
-        base_path = sys._MEIPASS  # PyInstaller temp folder
+        base_path = sys._MEIPASS
     except Exception:
         base_path = os.path.abspath(".")
-
     return os.path.join(base_path, relative_path)
 
-
 boost_factor = 2.1
-
 
 def perceptual_color_to_color2(r, g, b, boost=2.1):
     def adjust(c):
@@ -24,6 +20,11 @@ def perceptual_color_to_color2(r, g, b, boost=2.1):
         return round(min(boosted, 1.0), 3)
     return tuple(adjust(c) for c in (r, g, b))
 
+def color2_to_perceptual_color(r_norm, g_norm, b_norm, boost=2.1):
+    def reverse_adjust(c):
+        boosted = pow(c, boost) * 255
+        return int(min(255, max(0, round(boosted))))
+    return tuple(reverse_adjust(c) for c in (r_norm, g_norm, b_norm))
 
 def convert_color(event=None):
     r, g, b = safe_get_rgb()
@@ -32,6 +33,22 @@ def convert_color(event=None):
     update_color_preview(r, g, b, color2)
     update_vmt_snippet(color2)
 
+def convert_backwards():
+    try:
+        r = float(entry_c2_r.get())
+        g = float(entry_c2_g.get())
+        b = float(entry_c2_b.get())
+        r, g, b = max(0, min(r, 1)), max(0, min(g, 1)), max(0, min(b, 1))
+        color = color2_to_perceptual_color(r, g, b, boost_factor)
+        entry_r.delete(0, tk.END)
+        entry_g.delete(0, tk.END)
+        entry_b.delete(0, tk.END)
+        entry_r.insert(0, str(color[0]))
+        entry_g.insert(0, str(color[1]))
+        entry_b.insert(0, str(color[2]))
+        convert_color()
+    except ValueError:
+        messagebox.showerror("Invalid Input", "Please enter valid $color2 float values (0–1)")
 
 def update_color_preview(r, g, b, color2):
     def unboost(c):
@@ -41,12 +58,10 @@ def update_color_preview(r, g, b, color2):
     color_preview.config(bg=output_color)
     color_preview.after(10, lambda: color_preview.config(highlightbackground=output_color))
 
-
 def update_boost(val):
     global boost_factor
     boost_factor = float(val)
     convert_color()
-
 
 def copy_to_clipboard():
     result = result_var.get()
@@ -56,7 +71,6 @@ def copy_to_clipboard():
         clipboard_message.config(text="Copied!", fg="lime")
         root.after(2000, lambda: clipboard_message.config(text=""))
 
-
 def safe_get_rgb():
     try:
         r = int(entry_r.get()) if entry_r.get() else 0
@@ -65,7 +79,6 @@ def safe_get_rgb():
         return max(0, min(r, 255)), max(0, min(g, 255)), max(0, min(b, 255))
     except:
         return 0, 0, 0
-
 
 def update_vmt_snippet(color2):
     vmt_text = f'''VertexLitGeneric
@@ -79,13 +92,21 @@ def update_vmt_snippet(color2):
     vmt_box.insert(tk.END, vmt_text)
     vmt_box.config(state="disabled")
 
-
 def toggle_advanced():
     if advanced_var.get():
         boost_slider.grid()
+        reverse_label.grid()
+        entry_c2_r.grid()
+        entry_c2_g.grid()
+        entry_c2_b.grid()
+        reverse_button.grid()
     else:
         boost_slider.grid_remove()
-
+        reverse_label.grid_remove()
+        entry_c2_r.grid_remove()
+        entry_c2_g.grid_remove()
+        entry_c2_b.grid_remove()
+        reverse_button.grid_remove()
 
 def open_about():
     about = tk.Toplevel(root)
@@ -93,7 +114,7 @@ def open_about():
     about.resizable(False, False)
     about.configure(bg=dark_bg)
     tk.Label(about, text="Created by peeps", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
-    tk.Label(about, text="Version: 0.0.4", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
+    tk.Label(about, text="Version: 0.0.5", fg=light_fg, bg=dark_bg).pack(pady=(10, 0))
     tk.Label(about, text="Contact:", fg=light_fg, bg=dark_bg).pack()
     btn_frame = tk.Frame(about, bg=dark_bg)
     btn_frame.pack(pady=5)
@@ -102,8 +123,7 @@ def open_about():
     tk.Button(btn_frame, text="GitHub", width=10, command=lambda: webbrowser.open("https://github.com/halfpeeps/VMT-Color-Converter")).pack(side="left", padx=5)
     tk.Button(btn_frame, text="Web Version", width=10, command=lambda: webbrowser.open("https://halfpeeps.github.io/VMT-Color-Converter/")).pack(side="left", padx=5)
 
-
-#gui
+# GUI setup
 dark_bg = "#1e1e1e"
 light_fg = "#f0f0f0"
 entry_bg = "#2c2c2c"
@@ -122,7 +142,6 @@ root.resizable(False, False)
 frame = tk.Frame(root, bg=dark_bg, padx=20, pady=20)
 frame.pack()
 
-#rgb in
 for i, channel in enumerate("RGB"):
     tk.Label(frame, text=channel, bg=dark_bg, fg=light_fg, font=("Segoe UI", 14)).grid(row=0, column=i, padx=10)
 
@@ -140,7 +159,6 @@ for entry in (entry_r, entry_g, entry_b):
     entry.bind("<KeyRelease>", convert_color)
     entry.bind("<Return>", convert_color)
 
-#output
 tk.Label(frame, text="$color2", fg=light_fg, bg=dark_bg, font=font_heading).grid(row=2, column=0, columnspan=3, pady=(20, 0))
 result_var = tk.StringVar()
 tk.Entry(frame, textvariable=result_var, width=35, state="readonly", justify="center",
@@ -153,7 +171,6 @@ clipboard_message.grid(row=4, column=0, columnspan=3)
 tk.Button(frame, text="Copy to Clipboard", command=copy_to_clipboard, bg=button_bg, fg=light_fg,
           relief="flat", font=font_main, activebackground=button_bg).grid(row=5, column=0, columnspan=3, pady=(5, 15))
 
-#snippit
 tk.Label(frame, text="VMT SNIPPET", fg=light_fg, bg=dark_bg, font=font_heading).grid(row=6, column=0, columnspan=3)
 
 vmt_box = tk.Text(frame, height=6, width=35, wrap="none", bg=entry_bg, fg=light_fg,
@@ -161,11 +178,9 @@ vmt_box = tk.Text(frame, height=6, width=35, wrap="none", bg=entry_bg, fg=light_
 vmt_box.grid(row=7, column=0, columnspan=3, pady=5)
 vmt_box.config(state="disabled")
 
-#preview
 color_preview = tk.Label(frame, text="PREVIEW", font=("Segoe UI", 20, "bold"), width=20, height=10,
                          bg=dark_bg, fg=light_fg, relief="flat", bd=2, highlightthickness=2, highlightbackground=outline)
 color_preview.grid(row=0, column=3, rowspan=8, padx=(40, 0), pady=10)
-
 
 advanced_var = tk.BooleanVar()
 tk.Checkbutton(frame, text="Advanced", variable=advanced_var, command=toggle_advanced,
@@ -179,6 +194,28 @@ boost_slider.grid_remove()
 
 tk.Button(frame, text="ABOUT", command=open_about, bg=button_bg, fg=light_fg,
           relief="flat", font=font_main, activebackground=button_bg).grid(row=9, column=3, sticky="e")
+
+reverse_label = tk.Label(frame, text="Reverse: $color2 → $color", fg=light_fg, bg=dark_bg, font=font_heading)
+reverse_label.grid(row=10, column=0, columnspan=3, pady=(20, 0))
+reverse_label.grid_remove()
+
+entry_c2_r = tk.Entry(frame, width=5, bg=entry_bg, fg=light_fg, insertbackground=light_fg,
+                      justify="center", relief="flat", font=font_main, highlightthickness=1, highlightbackground=outline)
+entry_c2_g = tk.Entry(frame, width=5, bg=entry_bg, fg=light_fg, insertbackground=light_fg,
+                      justify="center", relief="flat", font=font_main, highlightthickness=1, highlightbackground=outline)
+entry_c2_b = tk.Entry(frame, width=5, bg=entry_bg, fg=light_fg, insertbackground=light_fg,
+                      justify="center", relief="flat", font=font_main, highlightthickness=1, highlightbackground=outline)
+entry_c2_r.grid(row=11, column=0, padx=10)
+entry_c2_g.grid(row=11, column=1, padx=10)
+entry_c2_b.grid(row=11, column=2, padx=10)
+entry_c2_r.grid_remove()
+entry_c2_g.grid_remove()
+entry_c2_b.grid_remove()
+
+reverse_button = tk.Button(frame, text="Convert to $color", command=convert_backwards, bg=button_bg, fg=light_fg,
+          relief="flat", font=font_main, activebackground=button_bg)
+reverse_button.grid(row=12, column=0, columnspan=3, pady=10)
+reverse_button.grid_remove()
 
 entry_r.focus()
 root.mainloop()
