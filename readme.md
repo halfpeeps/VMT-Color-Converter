@@ -21,7 +21,7 @@ Desktop: 0.0.6  |  Web: 0.0.4-web
 
 ---
 
-### Requirements (for build)
+### Requirements (for building desktop version)
 
 - Python 3.10–3.12 (PyInstaller compatible)
 - Tkinter (comes with Python)
