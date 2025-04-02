@@ -4,6 +4,9 @@ A simple Python GUI tool to convert Source Engine `$color` (used on brushes) to 
 
 Web version: https://halfpeeps.github.io/VMT-Color-Converter/
 
+Garry's Mod addon version: https://steamcommunity.com/sharedfiles/filedetails/?id=3456942097
+
+
 ![Preview](https://files.perpheads.com/OgOZUYy36w6L14na.jpg)
 
 ## Interface Overview
@@ -17,7 +20,7 @@ Web version: https://halfpeeps.github.io/VMT-Color-Converter/
 ---
 
 ### Current versions
-Desktop: 0.0.6  |  Web: 0.0.4-web
+Desktop: 0.0.7  |  Web: 0.0.5-web
 
 ---
 
