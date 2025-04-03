@@ -28,7 +28,7 @@ if CLIENT then
         frame:MakePopup()
 
         local label = vgui.Create("DLabel", frame)
-        label:SetText("($color2 → $color):")
+        label:SetText("$color2 → $color:")
         label:SetPos(30, 35)
         label:SizeToContents()
 
