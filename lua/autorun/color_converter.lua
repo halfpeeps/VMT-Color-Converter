@@ -23,30 +23,30 @@ if CLIENT then
     local function OpenColorConverter()
         local frame = vgui.Create("DFrame")
         frame:SetTitle("VMT $color Converter")
-        frame:SetSize(460, 500)
+        frame:SetSize(460, 360)
         frame:Center()
         frame:MakePopup()
 
         local label = vgui.Create("DLabel", frame)
-        label:SetText("Enter $color values (0–255):")
+        label:SetText("($color2 → $color):")
         label:SetPos(30, 35)
         label:SizeToContents()
 
         local rEntry = vgui.Create("DTextEntry", frame)
         rEntry:SetNumeric(true)
-        rEntry:SetPlaceholderText("R")
+        rEntry:SetPlaceholderText("R (0-255)")
         rEntry:SetPos(30, 60)
         rEntry:SetSize(120, 25)
 
         local gEntry = vgui.Create("DTextEntry", frame)
         gEntry:SetNumeric(true)
-        gEntry:SetPlaceholderText("G")
+        gEntry:SetPlaceholderText("G (0-255)")
         gEntry:SetPos(165, 60)
         gEntry:SetSize(120, 25)
 
         local bEntry = vgui.Create("DTextEntry", frame)
         bEntry:SetNumeric(true)
-        bEntry:SetPlaceholderText("B")
+        bEntry:SetPlaceholderText("B (0-255)")
         bEntry:SetPos(300, 60)
         bEntry:SetSize(120, 25)
 
@@ -83,6 +83,7 @@ if CLIENT then
         boostSlider:SetDecimals(2)
         boostSlider:SetValue(boostFactor)
         boostSlider:SetText("")
+        boostSlider:SetTooltip("How much the intensity is altered in order to maintain\na percieved consistency in colour between shaders.\n(Default: 2.1)")
 
         boostSlider.OnValueChanged = function(_, val)
             boostFactor = val
@@ -90,22 +91,22 @@ if CLIENT then
         end
 
         local label2 = vgui.Create("DLabel", frame)
-        label2:SetText("Reverse: $color2 → $color (0–1 floats)")
+        label2:SetText("Reverse calculation ($color2 → $color)")
         label2:SetPos(30, 250)
         label2:SizeToContents()
 
         local crEntry = vgui.Create("DTextEntry", frame)
-        crEntry:SetPlaceholderText("R norm")
+        crEntry:SetPlaceholderText("R (0-1)")
         crEntry:SetPos(30, 275)
         crEntry:SetSize(120, 25)
 
         local cgEntry = vgui.Create("DTextEntry", frame)
-        cgEntry:SetPlaceholderText("G norm")
+        cgEntry:SetPlaceholderText("G (0-1)")
         cgEntry:SetPos(165, 275)
         cgEntry:SetSize(120, 25)
 
         local cbEntry = vgui.Create("DTextEntry", frame)
-        cbEntry:SetPlaceholderText("B norm")
+        cbEntry:SetPlaceholderText("B 0-1")
         cbEntry:SetPos(300, 275)
         cbEntry:SetSize(120, 25)
 
@@ -123,27 +124,6 @@ if CLIENT then
             gEntry:SetText(pg)
             bEntry:SetText(pb)
             update()
-        end
-
-        local vmtBox = vgui.Create("DTextEntry", frame)
-        vmtBox:SetMultiline(true)
-        vmtBox:SetPos(30, 360)
-        vmtBox:SetSize(390, 100)
-        vmtBox:SetEditable(false)
-
-        local updateVMT = function()
-            local text = result:GetValue()
-            if string.StartWith(text, "$color2") then
-                local v = string.match(text, "%[(.-)%]")
-                if v then
-                    vmtBox:SetText(string.format([[VertexLitGeneric
-{
-    $basetexture "models/debug/debugwhite"
-    $color2 "[%s]"
-    $model 1
-}]], v))
-                end
-            end
         end
 
         result.OnChange = updateVMT
